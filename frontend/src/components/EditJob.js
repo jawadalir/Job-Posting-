@@ -22,7 +22,7 @@ const EditJob = () => {
 
   useEffect(() => {
     fetchJob();
-  }, [id]);
+  }, [id, fetchJob]);
 
   const fetchJob = async () => {
     try {

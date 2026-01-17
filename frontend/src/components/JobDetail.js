@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getJobById } from '../utils/api';
 import '../styles/App.css';
@@ -10,11 +10,7 @@ const JobDetail = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchJobDetail();
-  }, [id]);
-
-  const fetchJobDetail = async () => {
+  const fetchJobDetail = useCallback(async () => {
     try {
       setLoading(true);
       const result = await getJobById(id);
@@ -29,7 +25,11 @@ const JobDetail = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchJobDetail();
+  }, [fetchJobDetail]);
 
   const formatSalary = (salary) => {
     return new Intl.NumberFormat('en-EU', {
