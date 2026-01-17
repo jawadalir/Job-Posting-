@@ -21,34 +21,34 @@ const EditJob = () => {
   const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
-    fetchJob();
-  }, [id, fetchJob]);
+    const fetchJob = async () => {
+      try {
+        setFetching(true);
+        const result = await getJobById(id);
 
-  const fetchJob = async () => {
-    try {
-      setFetching(true);
-      const result = await getJobById(id);
-
-      if (result.success) {
-        const job = result.data;
-        setFormData({
-          jobTitle: job.jobTitle,
-          location: job.location,
-          jobType: job.jobType,
-          salary: job.salary,
-          description: job.description,
-          workingHours: job.workingHours,
-          applyAt: job.applyAt,
-        });
-      } else {
-        setError(result.message || 'Failed to fetch job');
+        if (result.success) {
+          const job = result.data;
+          setFormData({
+            jobTitle: job.jobTitle,
+            location: job.location,
+            jobType: job.jobType,
+            salary: job.salary,
+            description: job.description,
+            workingHours: job.workingHours,
+            applyAt: job.applyAt,
+          });
+        } else {
+          setError(result.message || 'Failed to fetch job');
+        }
+      } catch (err) {
+        setError('An error occurred while fetching the job');
+      } finally {
+        setFetching(false);
       }
-    } catch (err) {
-      setError('An error occurred while fetching the job');
-    } finally {
-      setFetching(false);
-    }
-  };
+    };
+
+    fetchJob();
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
