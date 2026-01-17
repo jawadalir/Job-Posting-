@@ -17,18 +17,27 @@ exports.register = async (req, res) => {
 
     // Validate required fields
     if (!fullName || !email || !password || !passwordConfirm) {
-      return res.status(400).json({ message: 'Please provide all required fields' });
+      return res.status(400).json({ 
+        success: false,
+        message: 'Please provide all required fields' 
+      });
     }
 
     // Validate password match
     if (password !== passwordConfirm) {
-      return res.status(400).json({ message: 'Passwords do not match' });
+      return res.status(400).json({ 
+        success: false,
+        message: 'Passwords do not match' 
+      });
     }
 
     // Check if user already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(400).json({ message: 'Email already registered' });
+      return res.status(400).json({ 
+        success: false,
+        message: 'Email already registered' 
+      });
     }
 
     // Create user
@@ -51,7 +60,11 @@ exports.register = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Register error:', error);
+    res.status(500).json({ 
+      success: false,
+      message: error.message || 'Server error during registration' 
+    });
   }
 };
 
@@ -64,21 +77,30 @@ exports.login = async (req, res) => {
 
     // Validate email & password
     if (!email || !password) {
-      return res.status(400).json({ message: 'Please provide an email and password' });
+      return res.status(400).json({ 
+        success: false,
+        message: 'Please provide an email and password' 
+      });
     }
 
     // Check for user (password field not selected by default, so we need to select it)
     const user = await User.findOne({ email }).select('+password');
 
     if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ 
+        success: false,
+        message: 'Invalid credentials' 
+      });
     }
 
     // Check if password matches
     const isMatch = await user.matchPassword(password);
 
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ 
+        success: false,
+        message: 'Invalid credentials' 
+      });
     }
 
     // Create token
@@ -94,7 +116,11 @@ exports.login = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Login error:', error);
+    res.status(500).json({ 
+      success: false,
+      message: error.message || 'Server error during login' 
+    });
   }
 };
 
