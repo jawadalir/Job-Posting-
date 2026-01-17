@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../utils/api';
 import '../styles/App.css';
 
@@ -91,7 +91,7 @@ const Login = () => {
         </form>
 
         <p className="form-footer">
-          Don't have an account? <Link to="/register">Create one here</Link>
+          Need help? Contact your administrator.
         </p>
       </div>
     </div>
