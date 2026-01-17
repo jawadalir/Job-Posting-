@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navigation from './components/Navigation';
-import Register from './components/Register';
 import Login from './components/Login';
 import JobList from './components/JobList';
 import JobForm from './components/JobForm';
@@ -23,12 +22,13 @@ const AuthRoute = ({ children }) => {
 };
 
 function App() {
+  const isLoginPage = window.location.pathname === '/login';
+
   return (
     <Router>
-      <Navigation />
+      {!isLoginPage && <Navigation />}
       <Routes>
         {/* Auth Routes */}
-        <Route path="/register" element={<AuthRoute><Register /></AuthRoute>} />
         <Route path="/login" element={<AuthRoute><Login /></AuthRoute>} />
 
         {/* Job Routes */}
