@@ -105,6 +105,16 @@ body {
   text-align: center;
 }
 
+.form-card form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-card button[type="submit"] {
+  align-self: center;
+  margin-top: 1rem;
+}
+
 .form-group {
   margin-bottom: 1.5rem;
 }

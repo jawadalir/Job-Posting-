@@ -49,13 +49,7 @@ const Navigation = () => {
                 Logout
               </button>
             </>
-          ) : (
-            <>
-              <Link to="/login" className="nav-link">
-                Login
-              </Link>
-            </>
-          )}
+          ) : null}
         </div>
       </div>
     </nav>
