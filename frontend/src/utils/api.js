@@ -1,25 +1,30 @@
-// Determine API URL - React env vars must start with REACT_APP_ and are available at build time
+// Determine API URL at runtime (not build time) to avoid hardcoded URLs
 const getApiUrl = () => {
-  // Check if REACT_APP_API_URL is explicitly set (and not empty)
-  if (process.env.REACT_APP_API_URL && process.env.REACT_APP_API_URL.trim() !== '') {
-    return process.env.REACT_APP_API_URL;
+  // Runtime check: if we're on localhost, use localhost API
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    
+    // Development: use localhost
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'http://localhost:5000/api';
+    }
+    
+    // Production: always use relative path since frontend and backend are on same domain
+    // This works for Render, Vercel, or any single-domain deployment
+    return '/api';
   }
   
-  // In development, use localhost
-  if (typeof window !== 'undefined' && 
-      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-    return 'http://localhost:5000/api';
-  }
-  
-  // Production: use relative path (frontend and backend on same domain)
+  // Fallback (shouldn't happen in browser)
   return '/api';
 };
 
+// Get API URL at runtime, not build time
 const API_URL = getApiUrl();
 
-// Debug: Log API URL in development (remove in production if needed)
-if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-  console.log('API_URL:', API_URL);
+// Debug: Log API URL (helps troubleshoot)
+if (typeof window !== 'undefined') {
+  console.log('API_URL configured as:', API_URL);
+  console.log('Current hostname:', window.location.hostname);
 }
 
 // Helper function to get headers with token

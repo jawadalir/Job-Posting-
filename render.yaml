@@ -17,6 +17,4 @@ services:
         sync: false
       - key: NODE_ENV
         value: production
-      - key: REACT_APP_API_URL
-        value: /api
 
