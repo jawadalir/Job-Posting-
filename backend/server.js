@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const connectDB = require('./config/db');
 
 // Import routes
@@ -16,18 +17,22 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Routes
+// API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
 
-// Basic route
-app.get('/', (req, res) => {
+// API route handler
+app.get('/api', (req, res) => {
   res.json({ message: 'Welcome to Job Posting API' });
 });
 
-// Error handling for undefined routes
-app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found' });
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
 });
 
 const PORT = process.env.PORT || 5000;
