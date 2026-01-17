@@ -1,5 +1,26 @@
-const API_URL = process.env.REACT_APP_API_URL || 
-  (process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:5000/api');
+// Determine API URL - React env vars must start with REACT_APP_ and are available at build time
+const getApiUrl = () => {
+  // Check if REACT_APP_API_URL is explicitly set (and not empty)
+  if (process.env.REACT_APP_API_URL && process.env.REACT_APP_API_URL.trim() !== '') {
+    return process.env.REACT_APP_API_URL;
+  }
+  
+  // In development, use localhost
+  if (typeof window !== 'undefined' && 
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    return 'http://localhost:5000/api';
+  }
+  
+  // Production: use relative path (frontend and backend on same domain)
+  return '/api';
+};
+
+const API_URL = getApiUrl();
+
+// Debug: Log API URL in development (remove in production if needed)
+if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+  console.log('API_URL:', API_URL);
+}
 
 // Helper function to get headers with token
 const getHeaders = () => {
