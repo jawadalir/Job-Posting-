@@ -39,9 +39,6 @@ const Navigation = () => {
               <Link to="/post-job" className="nav-link">
                 Post Job
               </Link>
-              <Link to="/my-jobs" className="nav-link">
-                My Jobs
-              </Link>
               <span className="nav-user">
                 Welcome, {userData?.fullName || 'User'}
               </span>

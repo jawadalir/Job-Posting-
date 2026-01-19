@@ -17,7 +17,7 @@ const jobSchema = new mongoose.Schema(
     },
     salary: {
       type: Number,
-      required: [true, 'Please provide a salary range'],
+      required: false,
     },
     description: {
       type: String,
@@ -25,7 +25,7 @@ const jobSchema = new mongoose.Schema(
     },
     workingHours: {
       type: String,
-      required: [true, 'Please provide working hours'],
+      required: false,
     },
     applyAt: {
       type: String,

@@ -8,21 +8,32 @@ exports.createJob = async (req, res) => {
     const { jobTitle, location, jobType, salary, description, workingHours, applyAt } = req.body;
 
     // Validate required fields
-    if (!jobTitle || !location || !jobType || !salary || !description || !workingHours || !applyAt) {
+    if (!jobTitle || !location || !jobType || !description || !applyAt) {
       return res.status(400).json({ message: 'Please provide all required fields' });
     }
 
-    // Create job with posted by user ID
-    const job = await Job.create({
+    // Prepare job data - convert empty strings to undefined for optional fields
+    const jobData = {
       jobTitle,
       location,
       jobType,
-      salary,
       description,
-      workingHours,
       applyAt,
       postedBy: req.userId,
-    });
+    };
+
+    // Only include salary if it's provided and not empty
+    if (salary !== undefined && salary !== null && salary !== '') {
+      jobData.salary = Number(salary);
+    }
+
+    // Only include workingHours if it's provided and not empty
+    if (workingHours !== undefined && workingHours !== null && workingHours !== '') {
+      jobData.workingHours = workingHours;
+    }
+
+    // Create job with posted by user ID
+    const job = await Job.create(jobData);
 
     res.status(201).json({
       success: true,
@@ -38,7 +49,7 @@ exports.createJob = async (req, res) => {
 // @access  Public
 exports.getAllJobs = async (req, res) => {
   try {
-    const jobs = await Job.find().populate('postedBy', 'fullName email');
+    const jobs = await Job.find().populate('postedBy', 'fullName email _id');
 
     res.status(200).json({
       success: true,
@@ -103,7 +114,21 @@ exports.updateJob = async (req, res) => {
       return res.status(403).json({ message: 'Not authorized to update this job' });
     }
 
-    job = await Job.findByIdAndUpdate(req.params.id, req.body, {
+    // Prepare update data - handle empty strings for optional fields
+    const updateData = { ...req.body };
+    
+    // Convert empty strings to undefined for optional fields
+    if (updateData.salary !== undefined && updateData.salary !== null && updateData.salary !== '') {
+      updateData.salary = Number(updateData.salary);
+    } else if (updateData.salary === '') {
+      updateData.salary = undefined;
+    }
+
+    if (updateData.workingHours === '') {
+      updateData.workingHours = undefined;
+    }
+
+    job = await Job.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
       runValidators: true,
     });

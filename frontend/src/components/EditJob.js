@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getJobById, updateJob } from '../utils/api';
+import RichTextEditor from './RichTextEditor';
 import '../styles/App.css';
 
 const EditJob = () => {
@@ -95,7 +96,7 @@ const EditJob = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="jobTitle">Job Title</label>
+            <label htmlFor="jobTitle">Job Title *</label>
             <input
               type="text"
               id="jobTitle"
@@ -109,7 +110,7 @@ const EditJob = () => {
 
           <div className="form-row">
             <div className="form-group">
-              <label htmlFor="location">Location</label>
+              <label htmlFor="location">Location *</label>
               <input
                 type="text"
                 id="location"
@@ -146,22 +147,25 @@ const EditJob = () => {
               name="salary"
               value={formData.salary}
               onChange={handleChange}
-              required
               placeholder="e.g., 75000"
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="description">Job Description</label>
-            <textarea
-              id="description"
-              name="description"
+            <label htmlFor="description">Job Description *</label>
+            <RichTextEditor
               value={formData.description}
               onChange={handleChange}
+              placeholder="Enter detailed job description, responsibilities, requirements, etc. Use Ctrl+B for bold, Ctrl+I for italic."
               required
-              rows="6"
-              placeholder="Enter detailed job description, responsibilities, requirements, etc."
-            ></textarea>
+              rows={6}
+            />
+            <input
+              type="hidden"
+              name="description"
+              value={formData.description}
+              required
+            />
           </div>
 
           <div className="form-row">
@@ -173,13 +177,12 @@ const EditJob = () => {
                 name="workingHours"
                 value={formData.workingHours}
                 onChange={handleChange}
-                required
                 placeholder="e.g., 9 AM - 5 PM, Flexible"
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="applyAt">Apply At (Email/Link)</label>
+              <label htmlFor="applyAt">Apply At</label>
               <input
                 type="text"
                 id="applyAt"

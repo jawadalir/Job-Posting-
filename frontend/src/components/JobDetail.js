@@ -106,7 +106,13 @@ const JobDetail = () => {
 
         <div className="job-detail-description">
           <h2>Job Description</h2>
-          <p>{job.description}</p>
+          <div 
+            dangerouslySetInnerHTML={{ __html: job.description || '' }}
+            style={{ 
+              lineHeight: '1.6',
+              color: '#333'
+            }}
+          />
         </div>
       </div>
     </div>

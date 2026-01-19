@@ -55,6 +55,13 @@ const MyJobs = () => {
     }).format(salary);
   };
 
+  const stripHtml = (html) => {
+    if (!html) return '';
+    const tmp = document.createElement('DIV');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  };
+
   if (loading) {
     return <div className="container"><p className="loading">Loading your jobs...</p></div>;
   }
@@ -86,7 +93,7 @@ const MyJobs = () => {
                   <span className="job-type-badge">{job.jobType}</span>
                   <span>{job.workingHours}</span>
                 </div>
-                <p className="job-desc">{job.description.substring(0, 150)}...</p>
+                <p className="job-desc">{stripHtml(job.description).substring(0, 150)}...</p>
                 <div className="job-meta">
                   <small className="job-date">
                     {new Date(job.createdAt).toLocaleDateString()}
