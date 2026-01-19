@@ -32,6 +32,7 @@ const JobDetail = () => {
   }, [fetchJobDetail]);
 
   const formatSalary = (salary) => {
+    if (salary === undefined || salary === null || salary === '') return '';
     return new Intl.NumberFormat('en-EU', {
       style: 'currency',
       currency: 'EUR',
