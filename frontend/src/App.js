@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Login from './components/Login';
 import JobList from './components/JobList';
@@ -17,17 +17,19 @@ const ProtectedRoute = ({ children }) => {
 
 // Route that redirects to login if not authenticated
 const AuthRoute = ({ children }) => {
-  const token = localStorage.getItem('token');
   // Don't auto-redirect if token exists - let user stay on login page
   return children;
 };
 
-function App() {
-  const isLoginPage = window.location.pathname === '/login';
+function AppContent() {
+  const location = useLocation();
+  const token = localStorage.getItem('token');
+  const isLoginPage = location.pathname === '/login';
+  const shouldShowNav = !isLoginPage && token;
 
   return (
-    <Router>
-      {!isLoginPage && <Navigation />}
+    <>
+      {shouldShowNav && <Navigation />}
       <Routes>
         {/* Auth Routes */}
         <Route path="/login" element={<AuthRoute><Login /></AuthRoute>} />
@@ -66,6 +68,14 @@ function App() {
           }
         />
       </Routes>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }
