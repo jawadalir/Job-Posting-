@@ -12,6 +12,7 @@ const jobRoutes = require('./routes/jobs');
 connectDB();
 
 const app = express();
+// console.log("MONGO_URI:", process.env.MONGODB_URI);
 
 // Middleware
 app.use(cors());
@@ -35,8 +36,9 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+

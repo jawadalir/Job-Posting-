@@ -13,7 +13,7 @@ cd backend
 npm install
 npm run dev
 ```
-✅ Backend runs on http://localhost:5000
+✅ Backend runs on http://localhost:5001
 
 ### Step 3: Frontend Setup (Terminal 2)
 ```bash
