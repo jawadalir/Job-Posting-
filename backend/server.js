@@ -1,20 +1,17 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const connectDB = require('./config/db');
+import express from 'express';
+import { createServer } from 'vercel-express';
+import cors from 'cors';
+import path from 'path';
+import connectDB from './config/db.js';
 
-// Import routes
-const authRoutes = require('./routes/auth');
-const jobRoutes = require('./routes/jobs');
+import authRoutes from './routes/auth.js';
+import jobRoutes from './routes/jobs.js';
 
-// Connect to database
+// Connect DB
 connectDB();
 
 const app = express();
-// console.log("MONGO_URI:", process.env.MONGODB_URI);
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
@@ -22,23 +19,15 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
 
-// API route handler
 app.get('/api', (req, res) => {
   res.json({ message: 'Welcome to Job Posting API' });
 });
 
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, '../frontend/build')));
-
-// The "catchall" handler: for any request that doesn't
-// match one above, send back React's index.html file.
+// Serve React build
+app.use(express.static(path.join(process.cwd(), 'frontend/build')));
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+  res.sendFile(path.join(process.cwd(), 'frontend/build/index.html'));
 });
 
-const PORT = process.env.PORT || 5001;
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
+// **Remove app.listen()**
+export default createServer(app);
