@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 const connectDB = require('./config/db');
 
 // Import routes
@@ -12,7 +11,6 @@ const jobRoutes = require('./routes/jobs');
 connectDB();
 
 const app = express();
-// console.log("MONGO_URI:", process.env.MONGODB_URI);
 
 // Middleware
 app.use(cors());
@@ -22,23 +20,23 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
 
-// API route handler
+// Base API route
 app.get('/api', (req, res) => {
   res.json({ message: 'Welcome to Job Posting API' });
 });
 
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, '../frontend/build')));
-
-// The "catchall" handler: for any request that doesn't
-// match one above, send back React's index.html file.
-app.get('*', (req, res) => {
-  res.redirect('https://job-posting-ashy-eight.vercel.app/');
+// Catch-all route for undefined API routes
+app.use((req, res) => {
+  res.status(404).json({ error: 'Route not found' });
 });
 
-const PORT = process.env.PORT || 5001;
+// Start server only if not running on serverless platform
+if (process.env.NODE_ENV !== 'vercel') {
+  const PORT = process.env.PORT || 5001;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
+// Export app for serverless deployment (Vercel / Netlify)
+module.exports = app;
