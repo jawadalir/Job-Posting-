@@ -1,20 +1,24 @@
 // Determine API URL at runtime (not build time) to avoid hardcoded URLs
 const getApiUrl = () => {
+  // If we have a build-time env var, prefer that in production
+  if (process.env.REACT_APP_API_URL) {
+    return process.env.REACT_APP_API_URL.replace(/\/+$/, ''); // trim trailing slash
+  }
+
   // Runtime check: if we're on localhost, use localhost API
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
-    
-    // Development: use localhost
+
+    // Development: use localhost (match backend port)
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      return 'http://localhost:5000/api';
+      return 'http://localhost:5001/api';
     }
-    
-    // Production: always use relative path since frontend and backend are on same domain
-    // This works for Render, Vercel, or any single-domain deployment
+
+    // Fallback: assume same-origin /api
     return '/api';
   }
-  
-  // Fallback (shouldn't happen in browser)
+
+  // Fallback (non-browser)
   return '/api';
 };
 
